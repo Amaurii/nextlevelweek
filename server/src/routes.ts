@@ -7,6 +7,11 @@ routes.get('/', (request, response) =>{
     return response.json({message: 'Hello World'});
  });
 
+ routes.get('/points', async(request, response)=>{
+     const points = await knex('points').select('*');
+     return response.json(points);
+ });
+
 routes.get('/items', async(request, response) => {
     const items = await knex('items').select('*');
     const serializedItems = items.map(item => {
@@ -50,7 +55,6 @@ routes.post('/points', async(request, response) =>{
         };
     })
     await knex('point_items').insert(pointItems);
-
     return response.json({success: true});
 });
 
