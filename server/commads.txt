@@ -1,5 +1,4 @@
 npx ts-node src/server.ts
-
 npm run knex:migrate
 npm run knex:seed
 npm run dev
