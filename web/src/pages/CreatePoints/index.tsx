@@ -1,11 +1,30 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import './styles.css';
 import logo from '../../assets/logo.svg';
-import { FiArrowLeft, FiLogIn } from 'react-icons/fi';
+import { FiArrowLeft} from 'react-icons/fi';
 import {Map, TileLayer, Marker }  from 'react-leaflet';
+import api from '../../services/api';
+
+
+interface Item {
+    id: number;
+    title: string;
+    image_url: string;
+}
 
 const CreatePoints = () => {
+    const [items, setItems] = useState<Item[]> ([]);
+    //Array ou Objeto precisamos manulamente informar o tipo da varivel armazenada no objeto.
+
+    // [] vazio ! A função vai ser executada uma unica vez, assim que o componete for 
+    //exibido em tela !
+    useEffect(() => {
+        api.get('items').then(response =>{
+        setItems(response.data);
+        })
+    }, []);
+
     return (
             <div id="page-create-point">
                     <header>
@@ -88,30 +107,12 @@ const CreatePoints = () => {
                         <span>Selecione um ou mais itens abaixo</span>
                     </legend>
                     <ul className="items-grid">
-                        <li className="selected">
-                            <img src="http://localhost:3333/uploads/oleo.svg" alt="oleo"/>
-                            <span>Óleo de Cozinha</span>
-                        </li>
-                        <li>
-                            <img src="http://localhost:3333/uploads/oleo.svg" alt="oleo"/>
-                            <span>Óleo de Cozinha</span>
-                        </li>
-                        <li>
-                            <img src="http://localhost:3333/uploads/oleo.svg" alt="oleo"/>
-                            <span>Óleo de Cozinha</span>
-                        </li>
-                        <li>
-                            <img src="http://localhost:3333/uploads/oleo.svg" alt="oleo"/>
-                            <span>Óleo de Cozinha</span>
-                        </li>
-                        <li>
-                            <img src="http://localhost:3333/uploads/oleo.svg" alt="oleo"/>
-                            <span>Óleo de Cozinha</span>
-                        </li>
-                        <li>
-                            <img src="http://localhost:3333/uploads/oleo.svg" alt="oleo"/>
-                            <span>Óleo de Cozinha</span>
-                        </li>
+                        {items.map(item =>(
+                            <li>
+                            <img src={item.image_url} alt={item.title}/>
+                            <span>{item.title}</span>
+                            </li>
+                        ))}
                     </ul>
                 </fieldset>
 
@@ -121,4 +122,3 @@ const CreatePoints = () => {
     );
 }
 export default CreatePoints;
-
