@@ -5,6 +5,7 @@ import logo from '../../assets/logo.svg';
 import { FiArrowLeft} from 'react-icons/fi';
 import {Map, TileLayer, Marker }  from 'react-leaflet';
 import api from '../../services/api';
+import axios from 'axios';
 
 
 interface Item {
@@ -13,8 +14,13 @@ interface Item {
     image_url: string;
 }
 
+interface IBGEUFResponse{
+    sigla: string;
+}
+
 const CreatePoints = () => {
     const [items, setItems] = useState<Item[]> ([]);
+    const [ufs, setUfs] = useState<string[]> ([]);
     //Array ou Objeto precisamos manulamente informar o tipo da varivel armazenada no objeto.
 
     // [] vazio ! A função vai ser executada uma unica vez, assim que o componete for 
@@ -23,6 +29,13 @@ const CreatePoints = () => {
         api.get('items').then(response =>{
         setItems(response.data);
         })
+    }, []);
+
+    useEffect(() => {
+        axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response =>{
+        const ufInitials = response.data.map(uf => uf.sigla);
+        setUfs(ufInitials);
+        });
     }, []);
 
     return (
@@ -90,6 +103,9 @@ const CreatePoints = () => {
                             <label htmlFor="uf">Estado (UF)</label>
                             <select name="uf" id="uf">
                                 <option value="0">Selecione um UF</option>
+                                {ufs.map(uf => (
+                                    <option key={uf} value={uf}>{uf}</option>
+                                ))}
                             </select>
                         </div>
                         <div className="field">
@@ -108,7 +124,7 @@ const CreatePoints = () => {
                     </legend>
                     <ul className="items-grid">
                         {items.map(item =>(
-                            <li>
+                            <li key={item.id}>
                             <img src={item.image_url} alt={item.title}/>
                             <span>{item.title}</span>
                             </li>
