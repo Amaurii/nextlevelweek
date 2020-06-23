@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import './styles.css';
 import logo from '../../assets/logo.svg';
@@ -7,11 +7,14 @@ import {Map, TileLayer, Marker }  from 'react-leaflet';
 import api from '../../services/api';
 import axios from 'axios';
 
-
 interface Item {
     id: number;
     title: string;
     image_url: string;
+}
+
+interface MunicipiosResponse{
+    nome: string;
 }
 
 interface IBGEUFResponse{
@@ -21,6 +24,9 @@ interface IBGEUFResponse{
 const CreatePoints = () => {
     const [items, setItems] = useState<Item[]> ([]);
     const [ufs, setUfs] = useState<string[]> ([]);
+    const [selectedUf, setSelectUfs] = useState('0');
+    const [cities, setCities] = useState<string[]>([]);
+
     //Array ou Objeto precisamos manulamente informar o tipo da varivel armazenada no objeto.
 
     // [] vazio ! A função vai ser executada uma unica vez, assim que o componete for 
@@ -31,12 +37,25 @@ const CreatePoints = () => {
         })
     }, []);
 
+        function halnderSelectUfs(event: ChangeEvent<HTMLSelectElement>) {
+        const uf = event.target.value ;
+        setSelectUfs(uf);
+        }
+
     useEffect(() => {
         axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response =>{
         const ufInitials = response.data.map(uf => uf.sigla);
         setUfs(ufInitials);
-        });
+        })
     }, []);
+
+
+    useEffect(()=>{
+        axios.get<MunicipiosResponse[]>(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`).then(response =>{
+        const municipiosInitials = response.data.map(nome => nome.nome);
+        setCities(municipiosInitials);
+        });
+    }, [selectedUf]);
 
     return (
             <div id="page-create-point">
@@ -101,7 +120,7 @@ const CreatePoints = () => {
                     <div className="field-group">
                         <div className="field">
                             <label htmlFor="uf">Estado (UF)</label>
-                            <select name="uf" id="uf">
+                            <select name="uf" id="uf" value={selectedUf} onChange={halnderSelectUfs}>
                                 <option value="0">Selecione um UF</option>
                                 {ufs.map(uf => (
                                     <option key={uf} value={uf}>{uf}</option>
@@ -112,6 +131,9 @@ const CreatePoints = () => {
                             <label htmlFor="city">Cidade</label>
                             <select name="city" id="city">
                                 <option value="0">Selecione uma Cidade</option>
+                               {cities.map(cities => (
+                                    <option key={cities} value={cities}>{cities}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
