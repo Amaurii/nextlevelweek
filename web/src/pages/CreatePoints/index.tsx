@@ -78,6 +78,10 @@ const CreatePoints = () => {
         ])
     }
 
+    function handleInputChange(event: ChangeEvent<HTMLInputElement>){
+        console.log(event.target)
+    }
+
     return (
             <div id="page-create-point">
                     <header>
@@ -100,6 +104,7 @@ const CreatePoints = () => {
                         type="text"
                         name="name"
                         id="name"
+                        onChange={handleInputChange}
                         />
                     </div>
 
@@ -110,6 +115,7 @@ const CreatePoints = () => {
                         type="email"
                         name="email"
                         id="email"
+                        onChange={handleInputChange}
                         />
                     </div>
                     <div className="field">
@@ -118,6 +124,7 @@ const CreatePoints = () => {
                         type="text"
                         name="whatsap"
                         id="whatsap"
+                        onChange={handleInputChange}
                         />
                     </div>
                     </div>
@@ -129,7 +136,7 @@ const CreatePoints = () => {
                         <span>Selecione o endereço no mapa</span>
                     </legend>
                     
-                   <Map center={initialPosition} zoom={15} onClick={handleMapClick}>
+                   <Map center={[-2.5601377,-44.2471775]} zoom={15} onClick={handleMapClick}>
                         <TileLayer
                             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
