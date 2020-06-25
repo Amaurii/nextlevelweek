@@ -6,6 +6,7 @@ import { FiArrowLeft} from 'react-icons/fi';
 import {Map, TileLayer, Marker }  from 'react-leaflet';
 import api from '../../services/api';
 import axios from 'axios';
+import { LeafletMouseEvent } from 'leaflet';
 
 interface Item {
     id: number;
@@ -24,8 +25,11 @@ interface IBGEUFResponse{
 const CreatePoints = () => {
     const [items, setItems] = useState<Item[]> ([]);
     const [ufs, setUfs] = useState<string[]> ([]);
-    const [selectedUf, setSelectUfs] = useState('0');
     const [cities, setCities] = useState<string[]>([]);
+    const [selectedUf, setSelectUfs] = useState('0');
+    const [selectedCity, setSelectCity] = useState('0');
+    const [selectedPosition, setSelectPosition] = useState<[number, number]>([0,0])
+    const [initialPosition, setInitialPosition] = useState<[number, number]>([0,0])
 
     //Array ou Objeto precisamos manulamente informar o tipo da varivel armazenada no objeto.
 
@@ -37,11 +41,6 @@ const CreatePoints = () => {
         })
     }, []);
 
-        function halnderSelectUfs(event: ChangeEvent<HTMLSelectElement>) {
-        const uf = event.target.value ;
-        setSelectUfs(uf);
-        }
-
     useEffect(() => {
         axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response =>{
         const ufInitials = response.data.map(uf => uf.sigla);
@@ -49,13 +48,35 @@ const CreatePoints = () => {
         })
     }, []);
 
-
     useEffect(()=>{
         axios.get<MunicipiosResponse[]>(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`).then(response =>{
         const municipiosInitials = response.data.map(nome => nome.nome);
         setCities(municipiosInitials);
         });
     }, [selectedUf]);
+
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition(position => {
+            const {latitude, longitude} = position.coords;
+            setInitialPosition([latitude, longitude]);
+        });
+    }, [])
+    function halnderSelectUfs(event: ChangeEvent<HTMLSelectElement>) {
+        const uf = event.target.value ;
+        setSelectUfs(uf);
+    }
+    
+    function halndleSelectCity(event: ChangeEvent<HTMLSelectElement>) {
+        const city = event.target.value ;
+        setSelectCity(city);
+    }
+
+    function handleMapClick(event: LeafletMouseEvent){
+        setSelectPosition([
+            event.latlng.lat,
+            event.latlng.lng
+        ])
+    }
 
     return (
             <div id="page-create-point">
@@ -107,14 +128,14 @@ const CreatePoints = () => {
                         <h2>Endereço</h2>
                         <span>Selecione o endereço no mapa</span>
                     </legend>
-
-                   <Map center={[-2.5601377, -44.2384228]} zoom={15}>
+                    
+                   <Map center={initialPosition} zoom={15} onClick={handleMapClick}>
                         <TileLayer
                             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
 
-                        <Marker position={[-2.5601377, -44.2384228]} />
+                        <Marker position={selectedPosition} />
                    </Map>
 
                     <div className="field-group">
@@ -129,7 +150,12 @@ const CreatePoints = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="city">Cidade</label>
-                            <select name="city" id="city">
+                            <select 
+                            name="city" 
+                            id="city"
+                            value={selectedCity}
+                            onChange={halndleSelectCity}
+                            >
                                 <option value="0">Selecione uma Cidade</option>
                                {cities.map(cities => (
                                     <option key={cities} value={cities}>{cities}</option>
