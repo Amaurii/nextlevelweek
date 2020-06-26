@@ -29,6 +29,7 @@ const CreatePoints = () => {
     const [selectedUf, setSelectUfs] = useState('0');
     const [selectedCity, setSelectCity] = useState('0');
     const [selectedPosition, setSelectPosition] = useState<[number, number]>([0,0])
+    const [selectedItems, setSelectedItems] = useState<number[]>([]);
     // const [initialPosition, setInitialPosition] = useState<[number, number]>([0,0])
     const [formData, setFormData] = useState({
         name: '',
@@ -89,7 +90,14 @@ const CreatePoints = () => {
     }
 
     function handleSelectItem(id: number){
-        console.log('teste', id) ;
+        const alreadySelected = selectedItems.findIndex(item => item === id)
+
+        if(alreadySelected >= 0){
+            const filteredItens = selectedItems.filter(item => item !== id)
+            setSelectedItems(filteredItens);
+        }else{
+            setSelectedItems([...selectedItems, id]);
+        }
     }
 
     return (
@@ -189,7 +197,12 @@ const CreatePoints = () => {
                     </legend>
                     <ul className="items-grid">
                         {items.map(item =>(
-                            <li key={item.id} onClick={() => handleSelectItem(item.id)}>
+                            <li 
+                            key={item.id} 
+                            onClick={() => handleSelectItem(item.id)}
+                            className={selectedItems.includes(item.id) ? 'selected' : ''}
+                            >
+
                             <img src={item.image_url} alt={item.title}/>
                             <span>{item.title}</span>
                             </li>
