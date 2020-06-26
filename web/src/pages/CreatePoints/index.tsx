@@ -1,4 +1,4 @@
-import React, {useEffect, useState, ChangeEvent } from 'react';
+import React, {useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import './styles.css';
 import logo from '../../assets/logo.svg';
@@ -34,7 +34,7 @@ const CreatePoints = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        whatsapp: '',
+        whatsap: '',
     })
 
     //Array ou Objeto precisamos manulamente informar o tipo da varivel armazenada no objeto.
@@ -100,6 +100,30 @@ const CreatePoints = () => {
         }
     }
 
+    function handleSubmit(event: FormEvent ){
+        event.preventDefault();
+
+        const {name, email, whatsap } = formData;
+        const uf = selectedUf;
+        const city = selectedCity;
+        const[latitude, longitude] = selectedPosition;
+        const items = selectedItems;
+
+        const data = {
+            name,
+            email, 
+            whatsap,
+            uf,
+            city,
+            latitude, 
+            longitude,
+            items
+        };
+
+       api.post('points', data)
+       alert('Ponto de Coleta Criado')
+    }
+
     return (
             <div id="page-create-point">
                     <header>
@@ -110,7 +134,7 @@ const CreatePoints = () => {
                 </Link>
             </header>
 
-               <form>
+               <form onSubmit={handleSubmit}>
                 <h1>Cadastro do <br /> ponto de coleta</h1>
                 <fieldset>
                     <legend>
