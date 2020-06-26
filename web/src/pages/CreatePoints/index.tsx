@@ -29,7 +29,12 @@ const CreatePoints = () => {
     const [selectedUf, setSelectUfs] = useState('0');
     const [selectedCity, setSelectCity] = useState('0');
     const [selectedPosition, setSelectPosition] = useState<[number, number]>([0,0])
-    const [initialPosition, setInitialPosition] = useState<[number, number]>([0,0])
+    // const [initialPosition, setInitialPosition] = useState<[number, number]>([0,0])
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        whatsapp: '',
+    })
 
     //Array ou Objeto precisamos manulamente informar o tipo da varivel armazenada no objeto.
 
@@ -55,12 +60,12 @@ const CreatePoints = () => {
         });
     }, [selectedUf]);
 
-    useEffect(() => {
-        navigator.geolocation.getCurrentPosition(position => {
-            const {latitude, longitude} = position.coords;
-            setInitialPosition([latitude, longitude]);
-        });
-    }, [])
+    // useEffect(() => {
+    //     navigator.geolocation.getCurrentPosition(position => {
+    //         const {latitude, longitude} = position.coords;
+    //         setInitialPosition([latitude, longitude]);
+    //     });
+    // }, [])
     function halnderSelectUfs(event: ChangeEvent<HTMLSelectElement>) {
         const uf = event.target.value ;
         setSelectUfs(uf);
@@ -79,7 +84,12 @@ const CreatePoints = () => {
     }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>){
-        console.log(event.target)
+        const {name, value } = event.target;
+        setFormData({...formData,[name]: value});
+    }
+
+    function handleSelectItem(id: number){
+        console.log('teste', id) ;
     }
 
     return (
@@ -179,7 +189,7 @@ const CreatePoints = () => {
                     </legend>
                     <ul className="items-grid">
                         {items.map(item =>(
-                            <li key={item.id}>
+                            <li key={item.id} onClick={() => handleSelectItem(item.id)}>
                             <img src={item.image_url} alt={item.title}/>
                             <span>{item.title}</span>
                             </li>
