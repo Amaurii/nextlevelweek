@@ -1,5 +1,5 @@
 import React, {useEffect, useState, ChangeEvent, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import './styles.css';
 import logo from '../../assets/logo.svg';
 import { FiArrowLeft} from 'react-icons/fi';
@@ -37,6 +37,7 @@ const CreatePoints = () => {
         whatsap: '',
     })
 
+    const history = useHistory();
     //Array ou Objeto precisamos manulamente informar o tipo da varivel armazenada no objeto.
 
     // [] vazio ! A função vai ser executada uma unica vez, assim que o componete for 
@@ -122,6 +123,7 @@ const CreatePoints = () => {
 
        api.post('points', data)
        alert('Ponto de Coleta Criado')
+       history.push('/');
     }
 
     return (
