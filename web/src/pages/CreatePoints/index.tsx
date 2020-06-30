@@ -7,6 +7,7 @@ import {Map, TileLayer, Marker }  from 'react-leaflet';
 import api from '../../services/api';
 import axios from 'axios';
 import { LeafletMouseEvent } from 'leaflet';
+import Redux from '../Redux/';
 
 interface Item {
     id: number;
@@ -127,8 +128,8 @@ const CreatePoints = () => {
     }
 
     return (
-            <div id="page-create-point">
-                    <header>
+        <div id="page-create-point">
+            <header>
                 <img src={logo} alt="Ecoleta" />
                 <Link to="/">
                 <FiArrowLeft />
@@ -136,7 +137,7 @@ const CreatePoints = () => {
                 </Link>
             </header>
 
-               <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <h1>Cadastro do <br /> ponto de coleta</h1>
                 <fieldset>
                     <legend>
@@ -237,8 +238,12 @@ const CreatePoints = () => {
                 </fieldset>
 
                 <button type="submit">Cadastrar ponto de coleta</button>
-               </form>
+            </form>
+             <div id="redux">
+            <Redux />
+        </div>
        </div>
+       
     );
 }
 export default CreatePoints;
