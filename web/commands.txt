@@ -3,3 +3,5 @@ npm install react-icons
 npm install react-router-dom
 
 typescript cheatsheets
+
+rafce - criação do componente typescript
