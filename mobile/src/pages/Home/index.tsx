@@ -16,6 +16,8 @@ const Home = () => {
     return (
     <View>
         <Image source={require('../../assets/logo.png')} />
+        <Text style={styles.title}>Seu marketplace de coletas de resíduos</Text>
+        <Text style={styles.description}> Ajudamos pessoas a encontrarem pontos de coletas </Text>
     </View>
     );
 };
