@@ -1,1 +1,5 @@
 # nextlevelweek
+
+#server
+#web
+#mobile
