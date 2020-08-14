@@ -7,7 +7,7 @@ import {
   Text,
   TextInput,
   KeyboardAvoidingView,
-  Platform
+  Platform, 
 } from "react-native";
 
 
